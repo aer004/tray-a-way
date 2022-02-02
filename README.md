@@ -1,6 +1,6 @@
 # tray-a-way
 Team members:
 
-Ben Shapero (brs424@nyu.edu)
-Esther Jung (hej239@nyu.edu)
-Rachel Bissell (rab762@nyu.edu)
+@bshepero13 Ben Shapero (brs424@nyu.edu)
+@hesther224 Esther Jung (hej239@nyu.edu)
+@aer004 Rachel Bissell (rab762@nyu.edu)
