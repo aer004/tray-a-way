@@ -1,19 +1,24 @@
 import pigpio
 import time
+import RPi.GPIO as GPIO
 
-pi = pigpio.pi()
+GPIO.setup(13, GPIO.OUT)
+pwm = GPIO.PWM(13, 4000)
+pwm.start(0)
 
 def buzzer_on():
 	"Turns buzzer on"
-	pi.hardware_PWM(13, 4000, 500000)
+	#pi.hardware_PWM(13, 5000, 500000)
+	pwm.ChangeDutyCycle(50)
 
 def buzzer_off():
 	"Turns buzzer off"
-	pi.hardware_PWM(13, 4000, 0)
+	#pi.hardware_PWM(13, 5000, 0)
+	pwm.ChangeDutyCycle(0)
 
 def play_tone(tone):
-	"Plays buzzer at certain tone, which is give in freqency"
-	pi.hardware_PWM(13, tone, 500000)
+	"Plays buzzer at certain tone"
+	pass
 
 def readNFC():
 	#when the NFC scans, notify that it reads
