@@ -1,10 +1,16 @@
 import tray
 import time
 
-harry_midi = [[988, 0.48], [1319, 0.72], [1568, 0.24], [1480, 0.48], [1319, 0.96], [1976, 0.48], [1760, 1.44]]
-for i in range(len(harry_midi)):
-	j = 0
-	tray.play_tone(harry_midi[i][j])
-	j += 1
-	time.sleep(harry_midi[i][j])
+print("Testing buzzer_on function...")
+tray.buzzer_on()
+print("Buzzer on")
+time.sleep(3)
 tray.buzzer_off()
+print("Buzzer off")
+
+tray.play_tone(1000)
+print("Playing buzzer tone at frequency 1000")
+time.sleep(3)
+tray.play_tone(3000)
+print("Playing buzzer tone at frequency 3000")
+
