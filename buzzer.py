@@ -17,5 +17,7 @@ time.sleep(3)
 tray.play_tone(3000)
 print("Playing buzzer tone at frequency 3000")
 
+tray.play_song(harry_midi, harry_tempo)
+print("Playing Harry Potter Theme")
 
 
