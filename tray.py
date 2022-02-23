@@ -36,7 +36,9 @@ def redLED():
 	pass
 
 def measureWeight():
+	#Detects initial weight on load cells when tray is first turned on for reference
 	pass
 
 def detectWeightChange():
+	#If weight is removed load cell, function will send message to user
 	pass
