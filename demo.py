@@ -24,4 +24,4 @@ except:
 try:
 	tray.play_harry()
 except:
-	print("Playing Harry Potter did not work"
+	print("Playing Harry Potter did not work")
