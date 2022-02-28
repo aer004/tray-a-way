@@ -21,7 +21,15 @@ def play_tone(tone):
 	pi.hardware_PWM(13, tone, 500000)
 
 def play_song(song, tempo):
-	"Input is a list with a list for every note. The zeroth index of the inner lists (song[i][0]) are keys for the frequency dictionary, which have values in Hz for each midi note. Then, the first index of the inner lists (song[i][1]) is the amount of durations the note should be played. To change that to seconds, the durations have to be multipled by the tempo, which is in milliseconds, so then the resulting value has to be divided by 1000."
+	"""
+	Input is a list with a list for every note. 
+	The zeroth index of the inner lists (song[i][0]) are keys for the frequency dictionary, 
+	which have values in Hz for each midi note. 
+	Then, the first index of the inner lists (song[i][1]) is the amount of 
+	durations the note should be played. 
+	To change that to seconds, the durations have to be multipled by the tempo, 
+	which is in milliseconds, so then the resulting value has to be divided by 1000.
+	"""
 	for i in range(len(song)): #go through length of input list
 		play_tone(frequency_chart[song[i][0]]) #play tone from frequency dictionary
 		time_seconds = (song[i][1] * tempo)/1000
