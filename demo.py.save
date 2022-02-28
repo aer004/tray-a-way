@@ -1,0 +1,13 @@
+import tray
+import time
+
+try:
+	tray.buzzer_setup()
+	print("Testing buzzer_on function...")
+	tray.buzzer_on()
+	print("Buzzer on")
+	time.sleep(30)
+	tray.buzzer_off()
+	print("Buzzer off")
+	time.sleep(3)
+
