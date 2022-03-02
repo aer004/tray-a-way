@@ -25,3 +25,15 @@ try:
 	tray.play_harry()
 except:
 	print("Playing Harry Potter did not work")
+
+try:
+	tray.nfc_setup()
+	print("Testing read_nfc function...")
+	print("Hold a tag near the NFC reader")
+	print("Reading tag in 1 second...")
+	time.sleep(1)
+
+	print("Please scan tag in 5 seconds")
+	tray.read_nfc()
+except:
+	print("Reading the NFC module did not work")
