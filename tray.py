@@ -56,7 +56,7 @@ def nfc_setup():
        nfctag.set_max_retries(NFC_MAX_TRIES) # only searching for a tag once since we don't want to wait infinitely 
        # can change the max retries if needed
 
-def readNFC():
+def read_nfc():
 	# when the NFC scans, notify that it reads
         t_end = time.time() + NFC_TIMEOUT
         card_read = False
