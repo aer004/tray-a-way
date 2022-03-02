@@ -51,10 +51,11 @@ def play_harry():
 	buzzer_off()
 
 def nfc_setup():
-       nfctag = Mifare() # using a NFC Mifare 1 tag
-       nfctag.SAMconfigure() # configure the NFC tag
-       nfctag.set_max_retries(NFC_MAX_TRIES) # only searching for a tag once since we don't want to wait infinitely 
-       # can change the max retries if needed
+        nfc_tag = Mifare() # using a NFC Mifare 1 tag
+        nfc_tag.SAMconfigure() # configure the NFC tag
+        nfc_tag.set_max_retries(NFC_MAX_TRIES) # only searching for a tag once since we don't want to wait infinitely 
+        # can change the max retries if needed
+        global nfc_tag
 
 def read_nfc():
 	# when the NFC scans, notify that it reads
@@ -62,7 +63,7 @@ def read_nfc():
         card_read = False
 
         while (time.time() < t_end) and (card_read == False):
-                uid = nfctag.scan_field()
+                uid = nfc_tag.scan_field()
                 if uid:
 			# return UID of tag if the scan was successful
 		        return uid
