@@ -1,5 +1,9 @@
 import pigpio
 import time
+from py532lib.i2c import *
+from py532lib.frame import *
+from py532lib.constants import *
+from py532lib.mifare import *
 
 frequency_chart = {"C_5": 523, "CS_5": 554, "D_5": 587, "DS_5": 622, "E_5": 659, "F_5": 698, "FS_5": 740, "G_5": 784, "GS_5": 831, "A_5": 880, "AS_5": 932, "B_5": 988, "C_6": 1047, "CS_6": 1109, "D_6": 1175, "DS_6": 1245, "E_6": 1319, "F_6": 1397, "FS_6": 1480, "G_6": 1568, "GS_6": 1661, "A_6": 1760, "AS_6": 1865, "B_6": 1976, "C_7": 2093, "CS_7": 2217, "D_7": 2349, "DS_7": 2489, "E_7": 2637, "F_7": 2794, "FS_7": 2960, "G_7": 3136, "GS_7": 3322, "A_7": 3520, "AS_7": 3729, "B_7": 3951}
 
@@ -31,7 +35,7 @@ def play_song(song, tempo):
 	which is in milliseconds, so then the resulting value has to be divided by 1000.
 	"""
 	for i in range(len(song)): #go through length of input list
-		play_tone(frequency_chart[song[i][0]]) #play tone from frequency dictionary
+	        play_tone(frequency_chart[song[i][0]]) #play tone from frequency dictionary
 		time_seconds = (song[i][1] * tempo)/1000
 		time.sleep(time_seconds) #let tone play for given time
 def play_harry():
@@ -42,9 +46,29 @@ def play_harry():
 	play_song(harry_midi, harry_tempo)
 	buzzer_off()
 
+def NFCtag_setup():
+       nfctag = Mifare() # using a NFC Mifare 1 tag
+       nfctag.SAMconfigure() # configure the NFC tag
+       nfctag.set_max_retries(1) # only searching for a tag once since we don't want to wait infinitely 
+       # can change the max retries if needed
+
 def readNFC():
-	#when the NFC scans, notify that it reads
-	pass
+	# when the NFC scans, notify that it reads
+	print("Hold a tag near the NFC reader")
+        print("Reading tag in 1 second...")
+        time.sleep(1)
+
+        print("Please scan tag in 5 seconds")
+        t_end = time.time() + 5
+        card_read = False
+
+        while (time.time() < t_end) and (card_read == False):
+                uid = nfctag.scan_field()
+                if uid:
+                        print("Successfully scanned tag")
+		        card_read = True
+        if (card_read == False):
+                print("No tag was scanned")
 
 def greenLED():
 	#turn LED green if NFC was read successfully
