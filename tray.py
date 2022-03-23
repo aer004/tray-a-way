@@ -7,6 +7,12 @@ from py532lib.mifare import *
 
 frequency_chart = {"C_5": 523, "CS_5": 554, "D_5": 587, "DS_5": 622, "E_5": 659, "F_5": 698, "FS_5": 740, "G_5": 784, "GS_5": 831, "A_5": 880, "AS_5": 932, "B_5": 988, "C_6": 1047, "CS_6": 1109, "D_6": 1175, "DS_6": 1245, "E_6": 1319, "F_6": 1397, "FS_6": 1480, "G_6": 1568, "GS_6": 1661, "A_6": 1760, "AS_6": 1865, "B_6": 1976, "C_7": 2093, "CS_7": 2217, "D_7": 2349, "DS_7": 2489, "E_7": 2637, "F_7": 2794, "FS_7": 2960, "G_7": 3136, "GS_7": 3322, "A_7": 3520, "AS_7": 3729, "B_7": 3951}
 
+#Buzzer Constants
+BUZZ_FREQ = 4000
+HALF_DUTY = 500000
+ZERO_DUTY = 0
+PWM_PIN = 13
+
 # NFC Constants
 NFC_TIMEOUT = 5
 NFC_MAX_TRIES = 1
@@ -18,15 +24,15 @@ def buzzer_setup():
 
 def buzzer_on():
 	"Turns buzzer on"
-	pi.hardware_PWM(13, 4000, 500000)
+	pi.hardware_PWM(PWM_PIN, BUZZ_FREQ, HALF_DUTY)
 
 def buzzer_off():
 	"Turns buzzer off"
-	pi.hardware_PWM(13, 4000, 0)
+	pi.hardware_PWM(PWM_PIN, BUZZ_FREQ, ZERO_DUTY)
 
 def play_tone(tone):
 	"Plays buzzer at certain tone, which is give in frequency"
-	pi.hardware_PWM(13, tone, 500000)
+	pi.hardware_PWM(PWM_PIN, tone, HALF_DUTY)
 
 def play_song(song, tempo):
 	"""
