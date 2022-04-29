@@ -37,6 +37,7 @@ ARMED = True
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY
 ALARM_MODE = False #True = LOUD False = silent
 WEIGHT_THRESHOLD = 4 # depends on load cell sensitivity
+WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
 
 """
 ARMED = True is the default since the Tray-a-way should be tracking for weight changes
@@ -45,6 +46,9 @@ When ARMED = True, this means that the alarm (silent or loud) will go off if the
 When ARMED = False, this means that the alarm will not go off since the user has a successful scan
 """
 
+"""
+ADDDDDDD LOCKSSSSS PLEASE OMG
+"""
 # def check_armed():
 #  global ARMED
 #  global CURRENT_WEIGHT
@@ -78,8 +82,13 @@ When ARMED = False, this means that the alarm will not go off since the user has
 #      record time and weight
     
    
-  
-  
+t1 = Thread(target=check_armed)
+t1.start()
+t2 = Thread(target=check_weight)
+t2.start()
+
+t1.join()
+t2.join()
   
 # Thread for continuously monitoring the NFC reader
 
