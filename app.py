@@ -25,24 +25,62 @@ One thread constantly checking the state of the LED
 - 3 states:
 - armed (white)
 - disarmed (green)
-- failure to scan (red)
+- failure to scan (red) # might not need the red LED since the loop will constantly check scan
 """
-
-import pigpio
+import tray
 import time
-from py532lib.i2c import *
-from py532lib.frame import *
-from py532lib.constants import *
-from py532lib.mifare import *
+from queue import Queue
+from threading import Thread, Lock, Event
 
 # Constants
 ARMED = True
+CURRENT_WEIGHT = 10 #SET IN SETUP.PY
+ALARM_MODE = False #True = LOUD False = silent
+WEIGHT_THRESHOLD = 4 # depends on load cell sensitivity
+
 """
 ARMED = True is the default since the Tray-a-way should be tracking for weight changes
 
-When ARMED = True, this means that  
+When ARMED = True, this means that the alarm (silent or loud) will go off if there is a weight change
+When ARMED = False, this means that the alarm will not go off since the user has a successful scan
 """
 
+# def check_armed():
+#  global ARMED
+#  global CURRENT_WEIGHT
+#  while True:
+#   scan = tray.read_nfc()
+#   if scan == None: #Case: scan timedout
+#    set.led(white, forever)
+#    ARMED = True
+#   elif scan == False: #Case: scan unsuccessful
+#    set.led(red, 4) #4 seconds?
+#    ARMED = True
+#   elif scan == uid:
+#    if ARMED == True:
+#     #CHECK IF UID IS THE RIGHT ID?
+#     ARMED = False
+#     set.led(green, forever)
+#    else: #ARMED == False
+#     CURRENT_WEIGHT = get.weight() #fake function
+#     ARMED = True
+#     set.led(white, forever)
+
+# def check_weight():
+#  global ARMED
+#  global CURRENT_WEIGHT
+#  global ALARM_MODE
+#  while True:
+#    if ARMED == True:
+#     if abs(get.weight() - CURRENT_WEIGHT) < WEIGHT_THRESHOLD: #check depending on sensitivity
+#      if ALARM_MODE == True:
+#       play_buzzer() #set time and lskedfjalskdjnbhd
+#      record time and weight
+    
+   
+  
+  
+  
 # Thread for continuously monitoring the NFC reader
 
 # Thread for checking if it is armed 
