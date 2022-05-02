@@ -23,7 +23,10 @@ WEIGHT_THRESHOLD = 4 # depends on load cell sensitivity
 global WEIGHT_LOG
 WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
 
+#thread stuff...
 WEIGHT_LOCK = Lock()
+
+#setup functions
 buzzer_setup()
 nfc_setup()
 
