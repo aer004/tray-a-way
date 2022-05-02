@@ -19,6 +19,7 @@ global CURRENT_WEIGHT
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
 ALARM_MODE = False #True = LOUD False = silent
+ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
 WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 10 grams
 global WEIGHT_LOG
 WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
@@ -100,12 +101,20 @@ def check_weight():
 	global ALARM_MODE
 	while True:
 		new_weight = tray.measure_weight()
-		if ARMED == True:
+		if ARMED == True: # alarm is on
 			if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
-				if ALARM_MODE = True:
-					tray.buzzer_on() #NEED TO TURN IT OFF??
 				CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
 				WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
+				
+				if ALARM_MODE = True: # loud mode
+					tray.buzzer_on()
+					tray.red_led()
+					while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
+						user = tray.read_nfc()
+						if user: # correctly scanned to turn off alarm during loud mode
+							tray.buzzer_off()
+							tray.led_off()
+					tray.buzzer_off() # turn off buzzer after 30 seconds default
     
    
 t1 = Thread(target=check_armed)
@@ -150,5 +159,5 @@ One thread constantly checking the state of the LED
 - 3 states:
 - armed (white)
 - disarmed (green)
-- failure to scan (red) # might not need the red LED since the loop will constantly check scan
+- alarm goes off (red)
 """
