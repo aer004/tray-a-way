@@ -3,6 +3,7 @@ import tray
 import time
 from queue import Queue
 from threading import Thread, Lock, Event
+import RPi.GPIO as GPIO
 
 # Constants
 global ARMED
@@ -23,6 +24,9 @@ ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off w
 WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 10 grams
 global WEIGHT_LOG
 WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
+
+# BCM pins
+GPIO.setmode(GPIO.BCM)
 
 #thread stuff
 WEIGHT_LOCK = Lock()
@@ -83,21 +87,21 @@ def check_armed():
 				scan = tray.read_nfc()
 				if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
 					tray.white_led()
-					sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
+					time.sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
 					tray.led_off()
 					ARMED = True
-				elif scan == uid: # successful scan
+				elif scan: # successful scan
 					if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
 						ARMED = False 
 						tray.buzzer_off()
 						tray.green_led()
-						sleep(3)
+						time.sleep(3)
 						tray.led_off()
 					else: # user wants to reactivate tray, done using
 						CURRENT_WEIGHT = tray.measure_weight()
 						ARMED = True
 						tray.white_led()
-						sleep(3)
+						time.sleep(3)
 						tray.led_off()
 
 def check_weight():
@@ -130,7 +134,7 @@ t1.start()
 t2 = Thread(target=check_weight)
 t2.start()
 
-app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
+#app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
 
 t1.join()
 t2.join()

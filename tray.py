@@ -18,6 +18,9 @@ RED_PIN = 19
 GREEN_PIN = 12
 BLUE_PIN = 18
 
+GPIO.setmode(GPIO.BCM) # using bcm pins
+GPIO.setwarnings(False) # to avoid potential error message
+
 # NFC Constants
 NFC_TIMEOUT = 5
 NFC_MAX_TRIES = 1
@@ -41,10 +44,10 @@ def buzzer_off():
 	pi.hardware_PWM(PWM_PIN, BUZZ_FREQ, ZERO_DUTY)
 
 def nfc_setup():
+        global nfc_tag
         nfc_tag = Mifare() # using a NFC Mifare 1 tag
         nfc_tag.SAMconfigure() # configure the NFC tag
         nfc_tag.set_max_retries(NFC_MAX_TRIES) # only searching for a tag once
-        global nfc_tag
 
 def read_nfc():
 	t_end = time.time() + NFC_TIMEOUT
@@ -109,6 +112,7 @@ def led_off():
 
 # Sets up load cell variables and calibrates it
 def load_cell_setup():
+	global hx
 	hx = HX711(LOAD_CELL_DATA_PIN, LOAD_CELL_CLOCK_PIN)
 	hx.set_reading_format("MSB","MSB")
 	hx.set_reference_unit(LOAD_CELL_REFERENCE_UNIT)
