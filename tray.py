@@ -160,13 +160,15 @@ def led_off():
 	GPIO.output(BLUE_PIN, GPIO.LOW)
 	GPIO.cleanup()
 
+## Sets up load cell variables and calibrates it
 def load_cell_setup():
 	hx = HX711(LOAD_CELL_DATA_PIN, LOAD_CELL_CLOCK_PIN)
 	hx.set_reading_format("MSB","MSB")
 	hx.set_reference_unit(LOAD_CELL_REFERENCE_UNIT)
 	hx.reset()
 	hx.tare()
-	
+
+## Obtains weight in grams
 def measure_weight():
 	val = hx.get_weight(5)
 	print(val)
