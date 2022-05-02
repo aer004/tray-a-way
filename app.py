@@ -114,7 +114,7 @@ def check_weight():
 							CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
 							WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
 
-							if ALARM_MODE = True: # loud mode
+							if ALARM_MODE == True: # loud mode
 								tray.buzzer_on()
 								tray.red_led()
 								while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
