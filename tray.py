@@ -168,20 +168,6 @@ def load_cell_setup():
 	hx.tare()
 	
 def measure_weight():
-	load_cell_setup()
-	while True:
-		try:
-			val = hx.get_weight(5)
-			print(val)
-			time.sleep(0.1)
-			
-		except(KeyboardInterrupt, SystemExit):
-			exit_function()
-
-def detect_weight_change():
-	#If weight is removed load cell, function will send message to user
-	pass
-
-def exit_function():
-	print("Bye")
-	sys.exit()
+	val = hx.get_weight(5)
+	print(val)
+	time.sleep(0.1)
