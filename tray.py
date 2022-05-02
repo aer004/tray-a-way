@@ -1,7 +1,6 @@
 import RPi.GPIO as GPIO
 import pigpio
 import time
-import sys
 from py532lib.i2c import *
 from py532lib.frame import *
 from py532lib.constants import *
@@ -76,44 +75,31 @@ def nfc_setup():
         # can change the max retries if needed
         global nfc_tag
 
-# def read_nfc():
-# 	# when the NFC scans, notify that it reads
-#         t_end = time.time() + NFC_TIMEOUT
-#         card_read = False
-
-#         while (time.time() < t_end) and (card_read == False):
-#                 uid = nfc_tag.scan_field()
-#                 if uid:
-# 			# return UID of tag if the scan was successful
-# 		        return uid
-# # 	if time.time() < t_end:
-# # 		return None #timer timed out
-	
-# # 	elif card_read == True:
-# # 		return "no sucess"
-	
-#         # this function will return uid or None -- success or no success
-#         return None
-
 # another read_nfc with wrong NFC tag
 def read_nfc():
 	t_end = time.time() + NFC_TIMEOUT
 	card_read = None
 	"""
-	if card_read = None, then there was no scan attempt
-	if card_read = False, then there was an unsuccessful scan
+	if card_read = False, then there was an unsuccessful scan (either wrong tag or no scan -- pn532 library can't differentiate the two 
 	if card_read = UID, then there was a successful scan
 	"""
 	
-	while (time.time() < t_end) and (card_read == None):
+	while (time.time() < t_end):
 		uid = nfc_tag.scan_field() # will either return UID (successful) or False (unsuccessful)
 		if uid:
 			# successful scan
 			return uid
+	"""		
 	if t_end <= time.time():
 		return None # no scan attempt since timer ran out
+	
 	elif card_read == False:
 		return False # unsuccessful scan attempt
+	"""
+	# pn532 library is unable to differentiate between the wrong tag or no scan (it just returns the same variable, False)
+	# only returns UID for the correct ID used
+	return False # unsuccessful scan attempt 
+
 		
 def led_setup():
 	GPIO.setmode(GPIO.BCM)
