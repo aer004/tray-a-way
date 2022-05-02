@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import pigpio
 import time
+import sys
 from py532lib.i2c import *
 from py532lib.frame import *
 from py532lib.constants import *
