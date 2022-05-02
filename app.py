@@ -22,10 +22,11 @@ ALARM_MODE = False #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
 WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 10 grams
 global WEIGHT_LOG
-WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
+WEIGHT_LOG = [] #[{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 
-#thread stuff...
+#thread stuff
 WEIGHT_LOCK = Lock()
+ARMED_LOCK = Lock()
 
 #setup functions
 tray.buzzer_setup()
@@ -58,16 +59,17 @@ def alarm_template():
 @app.route("/alarm/<int:action>")
 def alarm_act(action):
 	global ARMED
-	if action == 0:
-		ARMED = True
-	elif action == 1:
-		ARMED = False
-		tray.buzzer_off()
+	with ARMED_LOCK:
+		if action == 0:
+			ARMED = True
+		elif action == 1:
+			ARMED = False
+			tray.buzzer_off()
 	return redirect("/templates/alarm")
 
 @app.route("/templates/logdata")
 def logdata_template():
-	d = [{'weight': 14, 'time': 'May 2 1:15PM'}]
+	d = WEIGHT_LOG
 	return render_template("logdata", hist = d)
 
 
@@ -75,46 +77,50 @@ def check_armed():
 	global ARMED
 	global CURRENT_WEIGHT
 	while True:
-		scan = tray.read_nfc()
-		if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
-			tray.white_led()
-			sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
-			tray.led_off()
-			ARMED = True
-		elif scan == uid: # successful scan
-			if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
-				ARMED = False 
-				tray.buzzer_off()
-				tray.green_led()
-				sleep(3)
-				tray.led_off()
-			else: # user wants to reactivate tray, done using
-				CURRENT_WEIGHT = tray.measure_weight()
-				ARMED = True
-				tray.white_led()
-				sleep(3)
-				tray.led_off()
+		with ARMED_LOCK:
+			with WEIGHT_LOCK:
+				scan = tray.read_nfc()
+				if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
+					tray.white_led()
+					sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
+					tray.led_off()
+					ARMED = True
+				elif scan == uid: # successful scan
+					if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
+						ARMED = False 
+						tray.buzzer_off()
+						tray.green_led()
+						sleep(3)
+						tray.led_off()
+					else: # user wants to reactivate tray, done using
+						CURRENT_WEIGHT = tray.measure_weight()
+						ARMED = True
+						tray.white_led()
+						sleep(3)
+						tray.led_off()
 
 def check_weight():
 	global ARMED
 	global CURRENT_WEIGHT
 	global ALARM_MODE
 	while True:
-		new_weight = tray.measure_weight()
-		if ARMED == True: # alarm is on
-			if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
-				CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
-				WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
-				
-				if ALARM_MODE = True: # loud mode
-					tray.buzzer_on()
-					tray.red_led()
-					while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
-						user = tray.read_nfc()
-						if user: # correctly scanned to turn off alarm during loud mode
-							tray.buzzer_off()
-							tray.led_off()
-					tray.buzzer_off() # turn off buzzer after 30 seconds default
+		with ARMED_LOCK:
+			with WEIGHT_LOCK:
+				new_weight = tray.measure_weight()
+				if ARMED == True: # alarm is on
+					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
+						CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
+						WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
+
+						if ALARM_MODE = True: # loud mode
+							tray.buzzer_on()
+							tray.red_led()
+							while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
+								user = tray.read_nfc()
+								if user: # correctly scanned to turn off alarm during loud mode
+									tray.buzzer_off()
+									tray.led_off()
+							tray.buzzer_off() # turn off buzzer after 30 seconds default
     
    
 t1 = Thread(target=check_armed)
