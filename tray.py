@@ -42,32 +42,6 @@ def buzzer_off():
 	"Turns buzzer off"
 	pi.hardware_PWM(PWM_PIN, BUZZ_FREQ, ZERO_DUTY)
 
-def play_tone(tone):
-	"Plays buzzer at certain tone, which is give in frequency"
-	pi.hardware_PWM(PWM_PIN, tone, HALF_DUTY)
-
-def play_song(song, tempo):
-	"""
-	Input is a list with a list for every note. 
-	The zeroth index of the inner lists (song[i][0]) are keys for the frequency dictionary, 
-	which have values in Hz for each midi note. 
-	Then, the first index of the inner lists (song[i][1]) is the amount of 
-	durations the note should be played. 
-	To change that to seconds, the durations have to be multipled by the tempo, 
-	which is in milliseconds, so then the resulting value has to be divided by 1000.
-	"""
-	for i in range(len(song)): #go through length of input list
-	        play_tone(frequency_chart[song[i][0]]) #play tone from frequency dictionary
-		time_seconds = (song[i][1] * tempo)/1000
-		time.sleep(time_seconds) #let tone play for given time
-def play_harry():
-	"Plays harry potter theme song using play_song function"
-	harry_midi = [["B_5", 120], ["E_6", 180], ["G_6", 60], ["FS_6", 120], ["E_6", 240], ["B_6", 120], ["A_6", 255], ["A_6", 105], ["FS_6", 255], ["FS_6", 105], ["E_6", 180], ["G_6", 60], ["FS_6", 120], ["D_6", 240], ["F_6", 120], ["B_5", 255], ["B_5", 255], ["B_5", 210], ["E_6", 180], ["G_6", 60], ["FS_6", 120], ["E_6", 240], ["B_6", 120], ["D_7", 240], ["CS_7", 120], ["C_7", 240], ["GS_6", 120], ["C_7", 180], ["B_6", 60], ["AS_6", 120], ["FS_6", 240], ["G_6", 120], ["E_6", 255], ["E_6", 255], ["E_6", 90], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["C_7", 240], ["B_6", 120], ["AS_6", 240], ["FS_6", 120], ["G_6", 180], ["B_6", 60], ["AS_6", 120], ["AS_5", 240], ["B_5", 120], ["B_6", 255], ["B_6", 255],["B_6", 90], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["D_7", 240], ["CS_7", 120], ["C_7", 240], ["GS_6", 120], ["C_7", 180], ["B_6", 60], ["AS_6", 120], ["FS_6", 240], ["G_6", 120], ["E_6", 255], ["E_6", 255], ["E_6", 90]]
-	harry_tempo = 4
-	print("Playing Harry Potter Theme")
-	play_song(harry_midi, harry_tempo)
-	buzzer_off()
-
 def nfc_setup():
         nfc_tag = Mifare() # using a NFC Mifare 1 tag
         nfc_tag.SAMconfigure() # configure the NFC tag
@@ -150,3 +124,33 @@ def measure_weight():
 	val = hx.get_weight(5)
 	print(val)
 	time.sleep(0.1)
+	
+"""
+# Functions for testing the buzzer
+
+def play_tone(tone):
+	"Plays buzzer at certain tone, which is give in frequency"
+	pi.hardware_PWM(PWM_PIN, tone, HALF_DUTY)
+
+def play_song(song, tempo):
+	"""
+	Input is a list with a list for every note. 
+	The zeroth index of the inner lists (song[i][0]) are keys for the frequency dictionary, 
+	which have values in Hz for each midi note. 
+	Then, the first index of the inner lists (song[i][1]) is the amount of 
+	durations the note should be played. 
+	To change that to seconds, the durations have to be multipled by the tempo, 
+	which is in milliseconds, so then the resulting value has to be divided by 1000.
+	"""
+	for i in range(len(song)): #go through length of input list
+	        play_tone(frequency_chart[song[i][0]]) #play tone from frequency dictionary
+		time_seconds = (song[i][1] * tempo)/1000
+		time.sleep(time_seconds) #let tone play for given time
+def play_harry():
+	"Plays harry potter theme song using play_song function"
+	harry_midi = [["B_5", 120], ["E_6", 180], ["G_6", 60], ["FS_6", 120], ["E_6", 240], ["B_6", 120], ["A_6", 255], ["A_6", 105], ["FS_6", 255], ["FS_6", 105], ["E_6", 180], ["G_6", 60], ["FS_6", 120], ["D_6", 240], ["F_6", 120], ["B_5", 255], ["B_5", 255], ["B_5", 210], ["E_6", 180], ["G_6", 60], ["FS_6", 120], ["E_6", 240], ["B_6", 120], ["D_7", 240], ["CS_7", 120], ["C_7", 240], ["GS_6", 120], ["C_7", 180], ["B_6", 60], ["AS_6", 120], ["FS_6", 240], ["G_6", 120], ["E_6", 255], ["E_6", 255], ["E_6", 90], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["C_7", 240], ["B_6", 120], ["AS_6", 240], ["FS_6", 120], ["G_6", 180], ["B_6", 60], ["AS_6", 120], ["AS_5", 240], ["B_5", 120], ["B_6", 255], ["B_6", 255],["B_6", 90], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["B_6", 240], ["G_6", 120], ["D_7", 240], ["CS_7", 120], ["C_7", 240], ["GS_6", 120], ["C_7", 180], ["B_6", 60], ["AS_6", 120], ["FS_6", 240], ["G_6", 120], ["E_6", 255], ["E_6", 255], ["E_6", 90]]
+	harry_tempo = 4
+	print("Playing Harry Potter Theme")
+	play_song(harry_midi, harry_tempo)
+	buzzer_off()
+"""
