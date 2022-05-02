@@ -27,16 +27,21 @@ One thread constantly checking the state of the LED
 - disarmed (green)
 - failure to scan (red) # might not need the red LED since the loop will constantly check scan
 """
+from flask import Flask, render_template, redirect, request
 import tray
 import time
 from queue import Queue
 from threading import Thread, Lock, Event
 
 # Constants
+global ARMED
 ARMED = True
+global CURRENT_WEIGHT
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY
+global ALARM_MODE
 ALARM_MODE = False #True = LOUD False = silent
 WEIGHT_THRESHOLD = 4 # depends on load cell sensitivity
+global WEIGHT_LOG
 WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
 
 """
@@ -46,9 +51,12 @@ When ARMED = True, this means that the alarm (silent or loud) will go off if the
 When ARMED = False, this means that the alarm will not go off since the user has a successful scan
 """
 
-"""
-ADDDDDDD LOCKSSSSS PLEASE OMG
-"""
+WEIGHT_LOCK = Lock()
+buzzer_setup()
+nfc_setup()
+
+
+
 # def check_armed():
 #  global ARMED
 #  global CURRENT_WEIGHT
