@@ -173,7 +173,14 @@ def measure_weight():
 			val = hx.get_weight(5)
 			print(val)
 			time.sleep(0.1)
+			
+		except(KeyboardInterrupt, SystemExit):
+			exit_function()
 
 def detect_weight_change():
 	#If weight is removed load cell, function will send message to user
 	pass
+
+def exit_function():
+	print("Bye")
+	sys.exit()
