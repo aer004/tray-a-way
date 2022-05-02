@@ -1,3 +1,4 @@
+import RPi.GPIO as GPIO
 import pigpio
 import time
 from py532lib.i2c import *
@@ -12,6 +13,11 @@ BUZZ_FREQ = 4000
 HALF_DUTY = 500000
 ZERO_DUTY = 0
 PWM_PIN = 13
+#LED Pins
+RED_PIN = 19 
+GREEN_PIN = 12
+BLUE_PIN = 18
+
 
 # NFC Constants
 NFC_TIMEOUT = 5
@@ -102,14 +108,50 @@ def read_nfc():
 	elif card_read == False:
 		return False # unsuccessful scan attempt
 		
+def led_setup():
+	GPIO.setmode(GPIO.BCM)
 
-def greenLED():
-	#turn LED green if NFC was read successfully
-	pass
+	## Red LED
+	GPIO.setup(RED_PIN, GPIO.OUT)
+	pwm_red = GPIO.PWM(RED_PIN, 100) 
+	pwm_red.start(0) # duty cycle starting at 0
 
-def redLED():
-	#else, turn LED red to notify user that the NFC was not read
-	pass
+	## Green LED
+	GPIO.setup(GREEN_PIN, GPIO.OUT)
+	pwm_green = GPIO.PWM(GREEN_PIN, 100)
+	pwm_green.start(0)
+
+	## Blue LED
+	GPIO.setup(BLUE_PIN, GPIO.OUT)
+	pwm_blue = GPIO.PWM(BLUE_PIN, 100)
+	pwm_blue.start(0)
+
+## Failure to Scan Tag
+def red_led():
+	GPIO.output(GREEN_PIN, GPIO.LOW)
+	GPIO.output(BLUE_PIN, GPIO.LOW)
+	GPIO.output(RED_PIN, GPIO.HIGH)
+    
+
+## ARMED = False, (Disarmed) -- Let the user safely use the tray
+def green_led():
+	GPIO.output(RED_PIN, GPIO.LOW)
+	GPIO.output(BLUE_PIN, GPIO.LOW)
+	GPIO.output(GREEN_PIN, GPIO.HIGH)
+    
+
+## ARMED = True, Working Tray
+def white_led():
+	GPIO.output(BLUE_PIN, GPIO.HIGH)
+	GPIO.output(GREEN_PIN, GPIO.HIGH)
+	GPIO.output(RED_PIN, GPIO.HIGH)
+
+
+def led_off():
+	GPIO.output(RED_PIN, GPIO.LOW)
+	GPIO.output(GREEN_PIN, GPIO.LOW)
+	GPIO.output(BLUE_PIN, GPIO.LOW)
+	GPIO.cleanup()
 
 def measureWeight():
 	#Detects initial weight on load cells when tray is first turned on for reference
