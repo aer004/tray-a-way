@@ -71,11 +71,9 @@ def play_harry():
 def nfc_setup():
         nfc_tag = Mifare() # using a NFC Mifare 1 tag
         nfc_tag.SAMconfigure() # configure the NFC tag
-        nfc_tag.set_max_retries(NFC_MAX_TRIES) # only searching for a tag once since we don't want to wait infinitely 
-        # can change the max retries if needed
+        nfc_tag.set_max_retries(NFC_MAX_TRIES) # only searching for a tag once
         global nfc_tag
 
-# another read_nfc with wrong NFC tag
 def read_nfc():
 	t_end = time.time() + NFC_TIMEOUT
 	card_read = None
@@ -89,13 +87,6 @@ def read_nfc():
 		if uid:
 			# successful scan
 			return uid
-	"""		
-	if t_end <= time.time():
-		return None # no scan attempt since timer ran out
-	
-	elif card_read == False:
-		return False # unsuccessful scan attempt
-	"""
 	# pn532 library is unable to differentiate between the wrong tag or no scan (it just returns the same variable, False)
 	# only returns UID for the correct ID used
 	return False # unsuccessful scan attempt 
