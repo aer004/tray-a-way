@@ -6,6 +6,7 @@ from py532lib.i2c import *
 from py532lib.frame import *
 from py532lib.constants import *
 from py532lib.mifare import *
+from hx711 import HX711
 
 frequency_chart = {"C_5": 523, "CS_5": 554, "D_5": 587, "DS_5": 622, "E_5": 659, "F_5": 698, "FS_5": 740, "G_5": 784, "GS_5": 831, "A_5": 880, "AS_5": 932, "B_5": 988, "C_6": 1047, "CS_6": 1109, "D_6": 1175, "DS_6": 1245, "E_6": 1319, "F_6": 1397, "FS_6": 1480, "G_6": 1568, "GS_6": 1661, "A_6": 1760, "AS_6": 1865, "B_6": 1976, "C_7": 2093, "CS_7": 2217, "D_7": 2349, "DS_7": 2489, "E_7": 2637, "F_7": 2794, "FS_7": 2960, "G_7": 3136, "GS_7": 3322, "A_7": 3520, "AS_7": 3729, "B_7": 3951}
 
@@ -20,10 +21,14 @@ RED_PIN = 19
 GREEN_PIN = 12
 BLUE_PIN = 18
 
-
 # NFC Constants
 NFC_TIMEOUT = 5
 NFC_MAX_TRIES = 1
+
+#Load Cell Constants
+LOAD_CELL_REFERENCE_UNIT = 100
+LOAD_CELL_DATA_PIN = 5
+LOAD_CELL_CLOCK_PIN = 6
 
 def buzzer_setup():
 	"Sets up pi varible for pigpio library"
@@ -157,7 +162,17 @@ def led_off():
 
 def measureWeight():
 	#Detects initial weight on load cells when tray is first turned on for reference
-	pass
+	hx = HX711(LOAD_CELL_DATA_PIN, LOAD_CELL_CLOCK_PIN)
+	hx.set_reading_format("MSB","MSB")
+	hx.set_reference_unit(LOAD_CELL_REFERENCE_UNIT)
+	hx.reset()
+	hx.tare()
+	
+	while True:
+		try:
+			val = hx.get_weight(5)
+			print(val)
+			time.sleep(0.1)
 
 def detectWeightChange():
 	#If weight is removed load cell, function will send message to user
