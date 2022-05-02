@@ -37,3 +37,13 @@ try:
 	tray.read_nfc()
 except:
 	print("Reading the NFC module did not work")
+
+try:
+	tray.load_cell_setup()
+	print("Load Cell has been calibrated")
+	time.sleep(3)
+	
+	print("Current weight is: ")
+	tray.measure_weight()
+except:
+	print("Load Cells did not function properly")
