@@ -168,6 +168,7 @@ def load_cell_setup():
 	hx.tare()
 	
 def measure_weight():
+	load_cell_setup()
 	while True:
 		try:
 			val = hx.get_weight(5)
