@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Tray-a-way</title>
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-light navbar-expand-md">
+        <div class="container-fluid"><a class="navbar-brand" href="#">Tray-a-way</a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link active" href="/templates/alarm">Alarm Settings</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/templates/logdata">Log Data</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6"><div class="btn-group d-md-flex justify-content-center align-items-center align-content-center align-self-center" role="group"><a class="btn btn-danger btn-lg {{ armdisable }}" role="button" href="/alarm/0">Arm</a><a class="btn btn-success btn-lg {{ disarmdisable }}" role="button" href="/alarm/1">Disarm</a></div></div>
+            <div class="col-md-6">
+                <div class="btn-group d-md-flex align-items-md-center" role="group"><button class="btn btn-primary btn-lg" type="button">Loud</button><button class="btn btn-primary btn-lg" type="button">Silent</button></div>
+            </div>
+        </div>
+    </div>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
