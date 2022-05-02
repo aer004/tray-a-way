@@ -27,6 +27,7 @@ WEIGHT_LOG = [] #[{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 #thread stuff
 WEIGHT_LOCK = Lock()
 ARMED_LOCK = Lock()
+LOG_LOCK = Lock() # lock for the weight dictionary log
 
 #setup functions
 tray.buzzer_setup()
@@ -104,23 +105,24 @@ def check_weight():
 	global CURRENT_WEIGHT
 	global ALARM_MODE
 	while True:
-		with ARMED_LOCK:
-			with WEIGHT_LOCK:
+		with ARMED_LOCK: # editing ARMED variable
+			with WEIGHT_LOCK: # editing current weight
 				new_weight = tray.measure_weight()
 				if ARMED == True: # alarm is on
 					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
-						CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
-						WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
+						with LOG_LOCK: # editing dictionary
+							CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
+							WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
 
-						if ALARM_MODE = True: # loud mode
-							tray.buzzer_on()
-							tray.red_led()
-							while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
-								user = tray.read_nfc()
-								if user: # correctly scanned to turn off alarm during loud mode
-									tray.buzzer_off()
-									tray.led_off()
-							tray.buzzer_off() # turn off buzzer after 30 seconds default
+							if ALARM_MODE = True: # loud mode
+								tray.buzzer_on()
+								tray.red_led()
+								while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
+									user = tray.read_nfc()
+									if user: # correctly scanned to turn off alarm during loud mode
+										tray.buzzer_off()
+										tray.led_off()
+								tray.buzzer_off() # turn off buzzer after 30 seconds default
     
    
 t1 = Thread(target=check_armed)
