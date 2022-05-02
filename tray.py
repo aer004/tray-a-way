@@ -160,7 +160,7 @@ def led_off():
 	GPIO.output(BLUE_PIN, GPIO.LOW)
 	GPIO.cleanup()
 
-def measureWeight():
+def measure_weight():
 	#Detects initial weight on load cells when tray is first turned on for reference
 	hx = HX711(LOAD_CELL_DATA_PIN, LOAD_CELL_CLOCK_PIN)
 	hx.set_reading_format("MSB","MSB")
@@ -174,6 +174,6 @@ def measureWeight():
 			print(val)
 			time.sleep(0.1)
 
-def detectWeightChange():
+def detect_weight_change():
 	#If weight is removed load cell, function will send message to user
 	pass
