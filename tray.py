@@ -7,13 +7,13 @@ from py532lib.constants import *
 from py532lib.mifare import *
 from hx711 import HX711
 
-#Buzzer Constants
+# Buzzer Constants
 BUZZ_FREQ = 4000
 HALF_DUTY = 500000
 ZERO_DUTY = 0
 PWM_PIN = 13
 
-#LED Pins
+# LED Pins
 RED_PIN = 19 
 GREEN_PIN = 12
 BLUE_PIN = 18
@@ -22,7 +22,7 @@ BLUE_PIN = 18
 NFC_TIMEOUT = 5
 NFC_MAX_TRIES = 1
 
-#Load Cell Constants
+# Load Cell Constants
 LOAD_CELL_REFERENCE_UNIT = 100
 LOAD_CELL_DATA_PIN = 5
 LOAD_CELL_CLOCK_PIN = 6
@@ -62,8 +62,7 @@ def read_nfc():
 	# pn532 library is unable to differentiate between the wrong tag or no scan (it just returns the same variable, False)
 	# only returns UID for the correct ID used
 	return False # unsuccessful scan attempt 
-
-		
+	
 def led_setup():
 	GPIO.setmode(GPIO.BCM)
 
@@ -82,26 +81,25 @@ def led_setup():
 	pwm_blue = GPIO.PWM(BLUE_PIN, 100)
 	pwm_blue.start(0)
 
-## Failure to Scan Tag
+# Failure to Scan Tag
 def red_led():
 	GPIO.output(GREEN_PIN, GPIO.LOW)
 	GPIO.output(BLUE_PIN, GPIO.LOW)
 	GPIO.output(RED_PIN, GPIO.HIGH)
     
 
-## ARMED = False, (Disarmed) -- Let the user safely use the tray
+# ARMED = False, (Disarmed) -- Let the user safely use the tray
 def green_led():
 	GPIO.output(RED_PIN, GPIO.LOW)
 	GPIO.output(BLUE_PIN, GPIO.LOW)
 	GPIO.output(GREEN_PIN, GPIO.HIGH)
     
 
-## ARMED = True, Working Tray
+# ARMED = True, Working Tray
 def white_led():
 	GPIO.output(BLUE_PIN, GPIO.HIGH)
 	GPIO.output(GREEN_PIN, GPIO.HIGH)
 	GPIO.output(RED_PIN, GPIO.HIGH)
-
 
 def led_off():
 	GPIO.output(RED_PIN, GPIO.LOW)
@@ -109,7 +107,7 @@ def led_off():
 	GPIO.output(BLUE_PIN, GPIO.LOW)
 	GPIO.cleanup()
 
-## Sets up load cell variables and calibrates it
+# Sets up load cell variables and calibrates it
 def load_cell_setup():
 	hx = HX711(LOAD_CELL_DATA_PIN, LOAD_CELL_CLOCK_PIN)
 	hx.set_reading_format("MSB","MSB")
@@ -117,12 +115,13 @@ def load_cell_setup():
 	hx.reset()
 	hx.tare()
 
-## Obtains weight in grams
+# Obtains weight in grams
 def measure_weight():
 	val = hx.get_weight(5)
 	print(val)
 	time.sleep(0.1)
 	
+
 
 # Functions for testing the buzzer
 # frequency_chart = {"C_5": 523, "CS_5": 554, "D_5": 587, "DS_5": 622, "E_5": 659, "F_5": 698, "FS_5": 740, "G_5": 784, "GS_5": 831, "A_5": 880, "AS_5": 932, "B_5": 988, "C_6": 1047, "CS_6": 1109, "D_6": 1175, "DS_6": 1245, "E_6": 1319, "F_6": 1397, "FS_6": 1480, "G_6": 1568, "GS_6": 1661, "A_6": 1760, "AS_6": 1865, "B_6": 1976, "C_7": 2093, "CS_7": 2217, "D_7": 2349, "DS_7": 2489, "E_7": 2637, "F_7": 2794, "FS_7": 2960, "G_7": 3136, "GS_7": 3322, "A_7": 3520, "AS_7": 3729, "B_7": 3951}
