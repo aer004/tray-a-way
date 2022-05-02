@@ -16,10 +16,10 @@ When ARMED = False, this means that the alarm will not go off since the user has
 """
 
 global CURRENT_WEIGHT
-CURRENT_WEIGHT = 10 #SET IN SETUP.PY
+CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
 ALARM_MODE = False #True = LOUD False = silent
-WEIGHT_THRESHOLD = 4 # depends on load cell sensitivity
+WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 10 grams
 global WEIGHT_LOG
 WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
 
@@ -27,10 +27,10 @@ WEIGHT_LOG = [] #[[TIME, DATE, WEIGHT], ... ]
 WEIGHT_LOCK = Lock()
 
 #setup functions
-buzzer_setup()
-nfc_setup()
-led_setup()
-load_cell_setup()
+tray.buzzer_setup()
+tray.nfc_setup()
+tray.led_setup()
+tray.load_cell_setup()
 
 app = Flask(__name__, static_folder='assets')
 
@@ -61,6 +61,7 @@ def alarm_act(action):
 		ARMED = True
 	elif action == 1:
 		ARMED = False
+		tray.buzzer_off()
 	return redirect("/templates/alarm")
 
 @app.route("/templates/logdata")
@@ -74,33 +75,36 @@ def check_armed():
 	global CURRENT_WEIGHT
 	while True:
 		scan = tray.read_nfc()
-		if scan == None:
+		if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
 			tray.white_led()
+			sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
+			tray.led_off()
 			ARMED = True
-		elif scan == False:
-			tray.red_led()
-			sleep(3)
-			tray.white_led()
-		elif scan == uid:
-			if ARMED == True:
-				ARMED = False
+		elif scan == uid: # successful scan
+			if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
+				ARMED = False 
+				tray.buzzer_off()
 				tray.green_led()
-			else:
-				CURRENT_WEIGHT = measure_weight()
+				sleep(3)
+				tray.led_off()
+			else: # user wants to reactivate tray, done using
+				CURRENT_WEIGHT = tray.measure_weight()
 				ARMED = True
-				white_led()
+				tray.white_led()
+				sleep(3)
+				tray.led_off()
 
 def check_weight():
 	global ARMED
 	global CURRENT_WEIGHT
 	global ALARM_MODE
 	while True:
-		new_weight = get_weight()
+		new_weight = tray.measure_weight()
 		if ARMED == True:
 			if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
 				if ALARM_MODE = True:
-					buzzer_on() #NEED TO TURN IT OFF??
-				CURRENT_WEIGHT = measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
+					tray.buzzer_on() #NEED TO TURN IT OFF??
+				CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
 				WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
     
    
