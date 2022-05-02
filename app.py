@@ -30,6 +30,7 @@ WEIGHT_LOCK = Lock()
 buzzer_setup()
 nfc_setup()
 led_setup()
+load_cell_setup()
 
 app = Flask(__name__, static_folder='assets')
 
@@ -85,7 +86,7 @@ def check_armed():
 				ARMED = False
 				tray.green_led()
 			else:
-				CURRENT_WEIGHT = get_weight()
+				CURRENT_WEIGHT = measure_weight()
 				ARMED = True
 				white_led()
 
@@ -96,10 +97,10 @@ def check_weight():
 	while True:
 		new_weight = get_weight()
 		if ARMED == True:
-			if abs(new_weight - CURRENT_WEIGHT) < WEIGHT_THRESHOLD:
+			if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
 				if ALARM_MODE = True:
 					buzzer_on() #NEED TO TURN IT OFF??
-				CURRENT_WEIGHT = get_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
+				CURRENT_WEIGHT = measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
 				WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
     
    
