@@ -22,7 +22,7 @@ ALARM_MODE = False #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
 WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 10 grams
 global WEIGHT_LOG
-WEIGHT_LOG = [] #[{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
+WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 
 #thread stuff
 WEIGHT_LOCK = Lock()
