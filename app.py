@@ -68,38 +68,39 @@ def logdata_template():
 	return render_template("logdata", hist = d)
 
 
+def check_armed():
+	global ARMED
+	global CURRENT_WEIGHT
+	while True:
+		scan = tray.read_nfc()
+		if scan == None:
+			tray.white_led()
+			ARMED = True
+		elif scan == False:
+			tray.red_led()
+			sleep(3)
+			tray.white_led()
+		elif scan == uid:
+			if ARMED == True:
+				ARMED = False
+				tray.green_led()
+			else:
+				CURRENT_WEIGHT = get_weight()
+				ARMED = True
+				white_led()
 
-# def check_armed():
-#  global ARMED
-#  global CURRENT_WEIGHT
-#  while True:
-#   scan = tray.read_nfc()
-#   if scan == None: #Case: scan timedout
-#    set.led(white, forever)
-#    ARMED = True
-#   elif scan == False: #Case: scan unsuccessful
-#    set.led(red, 4) #4 seconds?
-#    ARMED = True
-#   elif scan == uid:
-#    if ARMED == True:
-#     #CHECK IF UID IS THE RIGHT ID?
-#     ARMED = False
-#     set.led(green, forever)
-#    else: #ARMED == False
-#     CURRENT_WEIGHT = get.weight() #fake function
-#     ARMED = True
-#     set.led(white, forever)
-
-# def check_weight():
-#  global ARMED
-#  global CURRENT_WEIGHT
-#  global ALARM_MODE
-#  while True:
-#    if ARMED == True:
-#     if abs(get.weight() - CURRENT_WEIGHT) < WEIGHT_THRESHOLD: #check depending on sensitivity
-#      if ALARM_MODE == True:
-#       play_buzzer() #set time and lskedfjalskdjnbhd
-#      record time and weight
+def check_weight():
+	global ARMED
+	global CURRENT_WEIGHT
+	global ALARM_MODE
+	while True:
+		new_weight = get_weight()
+		if ARMED == True:
+			if abs(new_weight - CURRENT_WEIGHT) < WEIGHT_THRESHOLD:
+				if ALARM_MODE = True:
+					buzzer_on() #NEED TO TURN IT OFF??
+				CURRENT_WEIGHT = get_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
+				WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
     
    
 t1 = Thread(target=check_armed)
