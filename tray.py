@@ -6,6 +6,7 @@ from py532lib.frame import *
 from py532lib.constants import *
 from py532lib.mifare import *
 from hx711 import HX711
+import random
 
 # Buzzer Constants
 BUZZ_FREQ = 4000
@@ -127,7 +128,7 @@ def measure_weight():
 	time.sleep(0.1)
 
 def dummy_measure_weight():
-	val = 50
+	val = random.randint(40,50)
 	print("Fake weight: ", val)
 	return val
 	time.sleep(0.1)
