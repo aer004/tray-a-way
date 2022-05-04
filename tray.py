@@ -115,7 +115,9 @@ def load_cell_setup():
 def measure_weight():
 	global WEIGHT_DELAY
 	val = hx.get_weight(5)
-	print(val)
+	if (val < 0):
+		val = 0
+	print("Weight: ", val)
 	time.sleep(WEIGHT_DELAY)
 	return val
 

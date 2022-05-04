@@ -21,7 +21,7 @@ CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
 ALARM_MODE = False  #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
-WEIGHT_THRESHOLD = 3 # depends on load cell sensitivity, 5 grams # made threshold 3 for the purpose of demo
+WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 5 grams # made threshold 3 for the purpose of demo
 global WEIGHT_LOG
 WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 global TIME_DATE
@@ -108,8 +108,8 @@ def check_armed():
 						time.sleep(3)
 						tray.led_off()
 					else: # user wants to reactivate tray, done using
-						#CURRENT_WEIGHT = tray.measure_weight()
-						CURRENT_WEIGHT = tray.dummy_measure_weight()
+						CURRENT_WEIGHT = tray.measure_weight()
+						#CURRENT_WEIGHT = tray.dummy_measure_weight()
 						ARMED = True
 						print("Scanned = True, User reactivated tray")
 						tray.white_led()
@@ -123,14 +123,14 @@ def check_weight():
 	while True:
 		with ARMED_LOCK: # editing ARMED variable
 			with WEIGHT_LOCK: # editing current weight
-				#new_weight = tray.measure_weight()
-				new_weight = tray.dummy_measure_weight()
+				new_weight = tray.measure_weight()
+				# new_weight = tray.dummy_measure_weight()
 				if ARMED == True: # alarm is on
 					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
 						with LOG_LOCK: # editing dictionary
 							tray.red_led() # turn on led
-							#CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
-							CURRENT_WEIGHT = tray.dummy_measure_weight()
+							CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
+							#CURRENT_WEIGHT = tray.dummy_measure_weight()
 							WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
 
 							if ALARM_MODE == True: # loud mode
