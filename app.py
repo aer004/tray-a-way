@@ -94,7 +94,7 @@ def check_armed():
 			with WEIGHT_LOCK:
 				scan = tray.read_nfc()
 				if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
-					print("Scanned = False")
+					print("Tray is activated, will trigger alarm")
 					tray.white_led()
 					time.sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
 					tray.led_off()
@@ -103,7 +103,7 @@ def check_armed():
 					if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
 						ARMED = False 
 						tray.buzzer_off()
-						print("Armed = True & Scanned = True")
+						print("Scanned = True, User deactivated tray")
 						tray.green_led()
 						time.sleep(3)
 						tray.led_off()
@@ -111,7 +111,7 @@ def check_armed():
 						#CURRENT_WEIGHT = tray.measure_weight()
 						CURRENT_WEIGHT = tray.dummy_measure_weight()
 						ARMED = True
-						print("Armed = False & Scanned = True")
+						print("Scanned = True, User reactivated tray")
 						tray.white_led()
 						time.sleep(3)
 						tray.led_off()
@@ -135,7 +135,7 @@ def check_weight():
 
 							if ALARM_MODE == True: # loud mode
 								tray.buzzer_on()
-								print("Loud mode On, passed weight change")
+								print("Loud Alarm, passed weight threshold")
 								curr_time = time.time()
 								while (curr_time < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
 									curr_time = time.time()
@@ -145,7 +145,7 @@ def check_weight():
 										tray.buzzer_off()
 								tray.buzzer_off() # turn off buzzer after 30 seconds default
 							else: # ALARM_MODE == False # silent mode, debug statements for demo
-								print("Silent mode On, passed weight change")
+								print("Silent Alarm, passed weight threshold")
 							tray.led_off()
 				else: # ARMED == False, user deactivated the alarm
 					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:

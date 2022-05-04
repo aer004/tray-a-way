@@ -122,7 +122,7 @@ def measure_weight():
 def dummy_measure_weight():
 	global WEIGHT_DELAY
 	val = random.randint(40,50)
-	print("Fake weight: ", val)
+	print("Weight: ", val)
 	time.sleep(WEIGHT_DELAY)
 	return val # change for delay (went too fast)
 
