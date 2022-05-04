@@ -24,6 +24,8 @@ ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off w
 WEIGHT_THRESHOLD = 5 # depends on load cell sensitivity, 5 grams
 global WEIGHT_LOG
 WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
+global TIME_DATE
+TIME_DATE = None
 
 # BCM pins
 GPIO.setmode(GPIO.BCM)
@@ -38,6 +40,12 @@ tray.buzzer_setup()
 tray.nfc_setup()
 tray.led_setup()
 tray.load_cell_setup()
+
+#time and date
+def get_time_date():
+	global TIME_DATE
+	TIME_DATE = datetime.today().strftime("%I:%M:%S %p") + date.today().strftime("%B %d, %Y")
+	return TIME_DATE
 
 app = Flask(__name__, static_folder='assets')
 

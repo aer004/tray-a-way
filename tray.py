@@ -30,6 +30,7 @@ NFC_MAX_TRIES = 1
 LOAD_CELL_REFERENCE_UNIT = 100
 LOAD_CELL_DATA_PIN = 5
 LOAD_CELL_CLOCK_PIN = 6
+WEIGHT_DELAY = 10 # delay for measuring each weight
 
 def buzzer_setup():
 	"Sets up pi varible for pigpio library"
@@ -122,16 +123,18 @@ def load_cell_setup():
 
 # Obtains weight in grams
 def measure_weight():
+	global WEIGHT_DELAY
 	val = hx.get_weight(5)
 	print(val)
+	time.sleep(WEIGHT_DELAY)
 	return val
-	time.sleep(0.1)
 
 def dummy_measure_weight():
+	global WEIGHT_DELAY
 	val = random.randint(40,50)
 	print("Fake weight: ", val)
-	return val
-	time.sleep(0.1)
+	time.sleep(WEIGHT_DELAY)
+	return val # change for delay (went too fast)
 
 
 # Functions for testing the buzzer
