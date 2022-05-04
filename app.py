@@ -19,7 +19,7 @@ When ARMED = False, this means that the alarm will not go off since the user has
 global CURRENT_WEIGHT
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
-ALARM_MODE = False #True = LOUD False = silent
+ALARM_MODE = True  #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
 WEIGHT_THRESHOLD = 5 # depends on load cell sensitivity, 5 grams
 global WEIGHT_LOG
@@ -94,6 +94,7 @@ def check_armed():
 			with WEIGHT_LOCK:
 				scan = tray.read_nfc()
 				if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
+					print("Scanned = False")
 					tray.white_led()
 					time.sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
 					tray.led_off()
@@ -102,6 +103,7 @@ def check_armed():
 					if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
 						ARMED = False 
 						tray.buzzer_off()
+						print("Armed = True & Scanned = True")
 						tray.green_led()
 						time.sleep(3)
 						tray.led_off()
@@ -109,6 +111,7 @@ def check_armed():
 						#CURRENT_WEIGHT = tray.measure_weight()
 						CURRENT_WEIGHT = tray.dummy_measure_weight()
 						ARMED = True
+						print("Armed = False & Scanned = True")
 						tray.white_led()
 						time.sleep(3)
 						tray.led_off()
@@ -125,19 +128,23 @@ def check_weight():
 				if ARMED == True: # alarm is on
 					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
 						with LOG_LOCK: # editing dictionary
+							tray.red_led() # turn on led
 							#CURRENT_WEIGHT = tray.measure_weight() #CURRENT TIME?? DEFAULT WEIGHT SET IN SETUP
 							CURRENT_WEIGHT = tray.dummy_measure_weight()
 							WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
 
 							if ALARM_MODE == True: # loud mode
 								tray.buzzer_on()
-								tray.red_led()
-								while (time.time() < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
+								print("Loud mode On, passed weight change")
+								curr_time = time.time()
+								while (curr_time < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
+									curr_time = time.time()
+									print("INSIDE LOOOOOOOP")
 									user = tray.read_nfc()
 									if user: # correctly scanned to turn off alarm during loud mode
 										tray.buzzer_off()
-										tray.led_off()
 								tray.buzzer_off() # turn off buzzer after 30 seconds default
+							tray.led_off()
     
    
 t1 = Thread(target=check_armed)

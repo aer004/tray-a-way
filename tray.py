@@ -30,7 +30,7 @@ NFC_MAX_TRIES = 1
 LOAD_CELL_REFERENCE_UNIT = 100
 LOAD_CELL_DATA_PIN = 5
 LOAD_CELL_CLOCK_PIN = 6
-WEIGHT_DELAY = 10 # delay for measuring each weight
+WEIGHT_DELAY = 2 # delay for measuring each weight
 
 def buzzer_setup():
 	"Sets up pi varible for pigpio library"
