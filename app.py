@@ -145,7 +145,10 @@ def check_weight():
 										tray.buzzer_off()
 								tray.buzzer_off() # turn off buzzer after 30 seconds default
 							tray.led_off()
-    
+				else: # ARMED == False, user deactivated the alarm
+					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
+			    			print("Passed the weight threshold, but user deactivated the alarm")
+						# just debug statement for demo testing to see what state we're in 
    
 t1 = Thread(target=check_armed)
 t1.start()
