@@ -19,9 +19,9 @@ When ARMED = False, this means that the alarm will not go off since the user has
 global CURRENT_WEIGHT
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
-ALARM_MODE = True  #True = LOUD False = silent
+ALARM_MODE = False  #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
-WEIGHT_THRESHOLD = 5 # depends on load cell sensitivity, 5 grams
+WEIGHT_THRESHOLD = 3 # depends on load cell sensitivity, 5 grams # made threshold 3 for the purpose of demo
 global WEIGHT_LOG
 WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 global TIME_DATE
@@ -144,6 +144,8 @@ def check_weight():
 									if user: # correctly scanned to turn off alarm during loud mode
 										tray.buzzer_off()
 								tray.buzzer_off() # turn off buzzer after 30 seconds default
+							else: # ALARM_MODE == False # silent mode, debug statements for demo
+								print("Silent mode On, passed weight change")
 							tray.led_off()
 				else: # ARMED == False, user deactivated the alarm
 					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
