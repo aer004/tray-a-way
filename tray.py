@@ -123,8 +123,14 @@ def load_cell_setup():
 def measure_weight():
 	val = hx.get_weight(5)
 	print(val)
+	return val
 	time.sleep(0.1)
-	
+
+def dummy_measure_weight():
+	val = 50
+	print("Fake weight: ", val)
+	return val
+	time.sleep(0.1)
 
 
 # Functions for testing the buzzer
