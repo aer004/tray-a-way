@@ -67,50 +67,40 @@ def read_nfc():
 	# pn532 library is unable to differentiate between the wrong tag or no scan (it just returns the same variable, False)
 	# only returns UID for the correct ID used
 	return False # unsuccessful scan attempt 
-	
-def led_setup():
-	GPIO.setmode(GPIO.BCM)
 
+def led_setup():
 	## Red LED
 	GPIO.setup(RED_PIN, GPIO.OUT)
-	pwm_red = GPIO.PWM(RED_PIN, 100) 
-	pwm_red.start(0) # duty cycle starting at 0
+	GPIO.output(RED_PIN, GPIO.HIGH)
 
 	## Green LED
 	GPIO.setup(GREEN_PIN, GPIO.OUT)
-	pwm_green = GPIO.PWM(GREEN_PIN, 100)
-	pwm_green.start(0)
+	GPIO.output(GREEN_PIN, GPIO.HIGH)
 
 	## Blue LED
 	GPIO.setup(BLUE_PIN, GPIO.OUT)
-	pwm_blue = GPIO.PWM(BLUE_PIN, 100)
-	pwm_blue.start(0)
+	GPIO.output(BLUE_PIN, GPIO.HIGH)
 
 # Failure to Scan Tag
 def red_led():
-	GPIO.output(GREEN_PIN, GPIO.LOW)
-	GPIO.output(BLUE_PIN, GPIO.LOW)
-	GPIO.output(RED_PIN, GPIO.HIGH)
+	GPIO.output(RED_PIN, GPIO.LOW)
     
 
 # ARMED = False, (Disarmed) -- Let the user safely use the tray
 def green_led():
-	GPIO.output(RED_PIN, GPIO.LOW)
-	GPIO.output(BLUE_PIN, GPIO.LOW)
-	GPIO.output(GREEN_PIN, GPIO.HIGH)
+	GPIO.output(GREEN_PIN, GPIO.LOW)
     
 
 # ARMED = True, Working Tray
 def white_led():
-	GPIO.output(BLUE_PIN, GPIO.HIGH)
-	GPIO.output(GREEN_PIN, GPIO.HIGH)
-	GPIO.output(RED_PIN, GPIO.HIGH)
+	GPIO.output(BLUE_PIN, GPIO.LOW)
+	GPIO.output(GREEN_PIN, GPIO.LOW)
+	GPIO.output(RED_PIN, GPIO.LOW)
 
 def led_off():
-	GPIO.output(RED_PIN, GPIO.LOW)
-	GPIO.output(GREEN_PIN, GPIO.LOW)
-	GPIO.output(BLUE_PIN, GPIO.LOW)
-	GPIO.cleanup()
+	GPIO.output(RED_PIN, GPIO.HIGH)
+	GPIO.output(GREEN_PIN, GPIO.HIGH)
+	GPIO.output(BLUE_PIN, GPIO.HIGH)
 
 # Sets up load cell variables and calibrates it
 def load_cell_setup():
