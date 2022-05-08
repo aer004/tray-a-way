@@ -21,7 +21,7 @@ CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
 ALARM_MODE = True  #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
-WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 5 grams # made threshold 3 for the purpose of demo
+WEIGHT_THRESHOLD = 5 # depends on load cell sensitivity, 5 grams 
 global WEIGHT_LOG
 WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 global TIME_DATE
