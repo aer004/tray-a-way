@@ -132,14 +132,13 @@ def check_weight():
 							if ALARM_MODE == True: # loud mode
 								tray.buzzer_on()
 								print("Loud Alarm, passed weight threshold")
-								curr_time = time.time()
+								curr_time = 0 # start at 0 seconds
 								while (curr_time < ALARM_DEFAULT): # keep buzzer on for 30 seconds unless the user scans the tag
-									curr_time = time.time()
+									time.sleep(1) # pass 1 second
+									curr_time++ # increment by 1 second
 									user = tray.read_nfc()
 									if user: # correctly scanned to turn off alarm during loud mode
 										tray.buzzer_off()
-								print("Just testing for 5 second") # curr_time might be wrong
-								time.sleep(5)
 								tray.buzzer_off() # turn off buzzer after 30 seconds default
 							else: # ALARM_MODE == False # silent mode, debug statements for demo
 								print("Silent Alarm, passed weight threshold")
