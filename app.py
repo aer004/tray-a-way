@@ -44,6 +44,11 @@ tray.nfc_setup()
 tray.led_setup()
 tray.load_cell_setup()
 
+if (ALARM_MODE == True):
+	print("You are in Loud Mode")
+else:
+	print("You are in Silent Mode")
+
 #time and date
 def get_time_date():
 	global TIME_DATE
