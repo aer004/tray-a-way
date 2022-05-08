@@ -121,13 +121,14 @@ def measure_weight():
 	time.sleep(WEIGHT_DELAY)
 	return val
 
+"""
 def dummy_measure_weight():
 	global WEIGHT_DELAY
 	val = random.randint(40,50)
 	print("Weight: ", val)
 	time.sleep(WEIGHT_DELAY)
 	return val # change for delay (went too fast)
-
+"""
 
 # Functions for testing the buzzer
 # frequency_chart = {"C_5": 523, "CS_5": 554, "D_5": 587, "DS_5": 622, "E_5": 659, "F_5": 698, "FS_5": 740, "G_5": 784, "GS_5": 831, "A_5": 880, "AS_5": 932, "B_5": 988, "C_6": 1047, "CS_6": 1109, "D_6": 1175, "DS_6": 1245, "E_6": 1319, "F_6": 1397, "FS_6": 1480, "G_6": 1568, "GS_6": 1661, "A_6": 1760, "AS_6": 1865, "B_6": 1976, "C_7": 2093, "CS_7": 2217, "D_7": 2349, "DS_7": 2489, "E_7": 2637, "F_7": 2794, "FS_7": 2960, "G_7": 3136, "GS_7": 3322, "A_7": 3520, "AS_7": 3729, "B_7": 3951}

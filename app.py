@@ -129,7 +129,6 @@ def check_weight():
 							tray.red_led() # turn on led to signal weight change
 							CURRENT_WEIGHT = tray.measure_weight()
 							WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
-
 							if ALARM_MODE == True: # loud mode
 								tray.buzzer_on()
 								print("Loud Alarm, passed weight threshold")
