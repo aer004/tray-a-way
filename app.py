@@ -140,7 +140,7 @@ def check_weight():
 									if user: # correctly scanned to turn off alarm during loud mode
 										print("User scanned; deactivating alarm...")
 										tray.buzzer_off()
-										tray.led_off() # turn off red led
+										break # break out of while loop
 								tray.buzzer_off() # turn off buzzer after 30 seconds default
 							else: # ALARM_MODE == False # silent mode, debug statements for demo
 								print("Silent Alarm, passed weight threshold")
