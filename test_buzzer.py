@@ -10,6 +10,8 @@ tray.buzzer_off()
 print("buzzer off")
 """
 
+tray.buzzer_setup()
+tray.buzzer_off()
 
 tray.led_setup()
 print("red")

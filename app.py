@@ -21,7 +21,7 @@ CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
 ALARM_MODE = True  #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
-WEIGHT_THRESHOLD = 5 # depends on load cell sensitivity, 5 grams 
+WEIGHT_THRESHOLD = 10 # depends on load cell sensitivity, 10 grams 
 global WEIGHT_LOG
 WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
 global TIME_DATE
@@ -36,6 +36,7 @@ ARMED_LOCK = Lock()
 LOG_LOCK = Lock() # lock for the weight dictionary log
 
 #setup functions
+print("Setting up components")
 tray.buzzer_setup()
 tray.nfc_setup()
 tray.led_setup()
@@ -95,9 +96,9 @@ def check_armed():
 				scan = tray.read_nfc()
 				if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
 					print("Tray is activated, will trigger alarm")
-					tray.white_led()
-					time.sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
-					tray.led_off()
+					#tray.white_led()
+					#time.sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
+					#tray.led_off()
 					ARMED = True
 				elif scan: # successful scan
 					if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
