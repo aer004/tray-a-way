@@ -35,8 +35,10 @@ WEIGHT_LOCK = Lock()
 ARMED_LOCK = Lock()
 LOG_LOCK = Lock() # lock for the weight dictionary log
 
+print("Welcome to the Tray-a-way") # Welcome message
+
 #setup functions
-print("Setting up components")
+print("Setting up components...") # debug message to show that we are loading functions
 tray.buzzer_setup()
 tray.nfc_setup()
 tray.led_setup()

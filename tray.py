@@ -117,7 +117,7 @@ def measure_weight():
 	val = hx.get_weight(5)
 	if (val < 0):
 		val = 0
-	print("Weight: ", val)
+	# print("Weight: ", val) # debug message, not needed for final project
 	time.sleep(WEIGHT_DELAY)
 	return val
 
