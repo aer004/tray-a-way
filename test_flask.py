@@ -73,11 +73,11 @@ def alarm_template():
 	loud = "disabled"
 	silent = ""
 	if ARMED == True:
-		arm = ""
-		disarm = "disabled"
-	elif ARMED == False:
 		arm = "disabled"
 		disarm = ""
+	elif ARMED == False:
+		arm = ""
+		disarm = "disabled"
 	if ALARM_MODE == True:
 		loud = ""
 		silent = "disabled"
@@ -93,6 +93,7 @@ def alarm_act(action):
 	with ARMED_LOCK:
 		if action == 0:
 			ARMED = True
+			print("action 0, armed is true")
 		elif action == 1:
 			ARMED = False
 			tray.buzzer_off()
@@ -105,6 +106,6 @@ def alarm_act(action):
 @app.route("/templates/logdata")
 def logdata_template():
 	d = WEIGHT_LOG
-	return render_template("logdata", hist = d)
+	return render_template("logdata.html", hist = d)
 
 app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
