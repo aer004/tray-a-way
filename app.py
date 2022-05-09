@@ -122,17 +122,18 @@ def check_armed():
 				if ARMED == False: # tray is deactivated
 					if scan: # successful scan, user wants to reactivate the tray
 						CURRENT_WEIGHT = tray.measure_weight()
-                                                ARMED = True
-                                                print("Scanned = True, User reactivated tray")
-                                                tray.white_led()
-                                                time.sleep(3)
-                                                tray.led_off()
+						ARMED = True
+						print("Scanned = True, User reactivated tray")
+						tray.white_led()
+						time.sleep(3)
+						tray.led_off()
 					# else: tray is deactivated so do nothing
 
 				else: # ARMED = True, have to check if the user wants to deactivate or not
-					if scan == False: # not tag was scanned (wrong ID or no tag, aka not the user)
-						print("Tray is activated, will trigger alarm")
-					else: # scan = True, successful scan
+					# if scan == False: # not tag was scanned (wrong ID or no tag, aka not the user)
+						# print("Tray is activated, will trigger alarm")
+						# don't need this since we don't want the terminal to keep indicating the tray is working
+					if scan: # scan = True, successful scan
 						# user wants to deactivate tray to safely use without triggering alarm
 						ARMED = False 
 						tray.buzzer_off()
