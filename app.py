@@ -69,23 +69,36 @@ def home_template():
 def alarm_template():
 	arm = "disabled"
 	disarm = ""
+	loud = "disabled"
+	silent = ""
 	if ARMED == True:
 		arm = ""
 		disarm = "disabled"
 	elif ARMED == False:
 		arm = "disabled"
 		disarm = ""
-	return render_template("alarm.html", armdisabled = arm, disarmdisabled = disarm)
+	if ALARM_MODE == True:
+		loud = ""
+		silent = "disabled"
+	elif ALARM_MODE == False:
+		loud = "disabled"
+		silent = ""
+	return render_template("alarm.html", armdisabled = arm, disarmdisabled = disarm, louddisable = loud, silentdisable = silent)
 
 @app.route("/alarm/<int:action>")
 def alarm_act(action):
 	global ARMED
+	global ALARM_MODE
 	with ARMED_LOCK:
 		if action == 0:
 			ARMED = True
 		elif action == 1:
 			ARMED = False
 			tray.buzzer_off()
+		elif action == 2:
+			ALARM_MODE = True
+		elif action == 3:
+			ALARM_MODE = False
 	return redirect("/templates/alarm")
 
 @app.route("/templates/logdata")
@@ -163,7 +176,7 @@ t1.start()
 t2 = Thread(target=check_weight)
 t2.start()
 
-#app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
+app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
 
 
 t1.join()
