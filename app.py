@@ -38,8 +38,6 @@ WEIGHT_LOCK = Lock()
 ARMED_LOCK = Lock()
 LOG_LOCK = Lock() # lock for the weight dictionary log
 
-print("Welcome to the Tray-a-way") # Welcome message
-
 
 def print_alarm_setting():
 	if (ALARM_MODE == True):
@@ -180,6 +178,7 @@ def check_weight():
 						# just debug statement for demo testing to see what state we're in 
 
 if __name__ == "__main__":
+	print("Welcome to the Tray-a-way") # Welcome message
 	print_alarm_setting() # tells user what alarm setting they are on initially
 	if (SETUP == False):   
 		print("Setting up components...") # debug message to show that we are loading functions
@@ -193,24 +192,20 @@ if __name__ == "__main__":
 		print("Finished setup*")
 		SETUP = True
 	
-	t1 = Thread(target=check_armed)
+	t1 = Thread(target=check_armed) # Thread for checking the NFC reader
 	t1.start()
-	t2 = Thread(target=check_weight)
+	t2 = Thread(target=check_weight) # Thread for checking the weight
 	t2.start()
 
 	print("Starting app")
 	app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
 
-
 	t1.join()
 	t2.join()
   
-# Thread for continuously monitoring the NFC reader
-
-# Thread for checking if it is armed 
-
 
 """
+Notes: 
 Issue: https://github.com/rb2468/tray-a-way/issues/72
  -- import libraries
  -- define an empty function for each task
