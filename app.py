@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request
 import tray
 import time
+import datetime
 from queue import Queue
 from threading import Thread, Lock, Event
 import RPi.GPIO as GPIO
@@ -14,6 +15,9 @@ ARMED = True is the default since the Tray-a-way should be tracking for weight c
 When ARMED = True, this means that the alarm (silent or loud) will go off if there is a weight change
 When ARMED = False, this means that the alarm will not go off since the user has a successful scan
 """
+
+global SETUP 
+SETUP = False # using to fix the Flask!
 
 global CURRENT_WEIGHT
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
@@ -34,15 +38,17 @@ WEIGHT_LOCK = Lock()
 ARMED_LOCK = Lock()
 LOG_LOCK = Lock() # lock for the weight dictionary log
 
-print("Welcome to the Tray-a-way") # Welcome message
+print("Welcome to the Tray-a-way*") # Welcome message
 
+"""
 #setup functions
-print("Setting up components...") # debug message to show that we are loading functions
+print("Setting up components...*") # debug message to show that we are loading functions
 tray.buzzer_setup()
 tray.nfc_setup()
 tray.led_setup()
 tray.load_cell_setup()
-
+print("Finished setup*") # debug message
+"""
 if (ALARM_MODE == True):
 	print("You are in Loud Mode")
 else:
@@ -96,6 +102,7 @@ def alarm_act(action):
 			print("action 0, armed is true")
 		elif action == 1:
 			ARMED = False
+			print("action 1, armed is false") # debug message for terminal
 			tray.buzzer_off()
 		elif action == 2:
 			ALARM_MODE = True
@@ -142,6 +149,7 @@ def check_weight():
 	global ARMED
 	global CURRENT_WEIGHT
 	global ALARM_MODE
+	global TIME_DATE
 	while True:
 		with ARMED_LOCK: # editing ARMED variable
 			with WEIGHT_LOCK: # editing current weight
@@ -151,6 +159,7 @@ def check_weight():
 						with LOG_LOCK: # editing dictionary
 							tray.red_led() # turn on led to signal weight change
 							CURRENT_WEIGHT = tray.measure_weight()
+							TIME_DATE = get_time_date()
 							WEIGHT_LOG.append({'weight': CURRENT_WEIGHT, 'time': TIME_DATE})
 							if ALARM_MODE == True: # loud mode
 								tray.buzzer_on()
@@ -172,17 +181,31 @@ def check_weight():
 					if abs(new_weight - CURRENT_WEIGHT) > WEIGHT_THRESHOLD:
 			    			print("Passed the weight threshold, but user deactivated the alarm")
 						# just debug statement for demo testing to see what state we're in 
-   
-t1 = Thread(target=check_armed)
-t1.start()
-t2 = Thread(target=check_weight)
-t2.start()
 
-app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
+if __name__ == "__main__":
+	if (SETUP == False):   
+		print("Setting up components...*") # debug message to show that we are loading functions
+		tray.buzzer_setup()
+		print("Buzzer done")
+		tray.nfc_setup() # not setting up
+		print("NFC done")
+		tray.led_setup()
+		print("LED done")
+		tray.load_cell_setup()
+		print("Finished setup*")
+		SETUP = True
+	
+	t1 = Thread(target=check_armed)
+	t1.start()
+	t2 = Thread(target=check_weight)
+	t2.start()
+
+	print("Starting app")
+	app.run(host='0.0.0.0', port=80, debug=False, threaded=True)
 
 
-t1.join()
-t2.join()
+	t1.join()
+	t2.join()
   
 # Thread for continuously monitoring the NFC reader
 
