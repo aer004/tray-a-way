@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request
 import tray
 import time
-import datetime
+from datetime import date, datetime
 from queue import Queue
 from threading import Thread, Lock, Event
 import RPi.GPIO as GPIO
@@ -22,11 +22,11 @@ SETUP = False # using to fix the Flask!
 global CURRENT_WEIGHT
 CURRENT_WEIGHT = 10 #SET IN SETUP.PY, dummy value currently
 global ALARM_MODE
-ALARM_MODE = True  #True = LOUD False = silent
+ALARM_MODE = False  #True = LOUD False = silent
 ALARM_DEFAULT = 30 # turn off alarm after 30 seconds, unless user turns it off with a tag
 WEIGHT_THRESHOLD = 15 # depends on load cell sensitivity, in grams 
 global WEIGHT_LOG
-WEIGHT_LOG = [] # [{'weight': 14, 'time': 'May 2 1:15PM'}, ... ]
+WEIGHT_LOG = [] # [{'weight': 14, 'time': '03:19:32 PM May 09, 2022'}, ... ]
 global TIME_DATE
 TIME_DATE = None
 
@@ -38,26 +38,19 @@ WEIGHT_LOCK = Lock()
 ARMED_LOCK = Lock()
 LOG_LOCK = Lock() # lock for the weight dictionary log
 
-print("Welcome to the Tray-a-way*") # Welcome message
+print("Welcome to the Tray-a-way") # Welcome message
 
-"""
-#setup functions
-print("Setting up components...*") # debug message to show that we are loading functions
-tray.buzzer_setup()
-tray.nfc_setup()
-tray.led_setup()
-tray.load_cell_setup()
-print("Finished setup*") # debug message
-"""
-if (ALARM_MODE == True):
-	print("You are in Loud Mode")
-else:
-	print("You are in Silent Mode")
+
+def print_alarm_setting():
+	if (ALARM_MODE == True):
+		print("You are in Loud Mode")
+	else:
+		print("You are in Silent Mode")
 
 #time and date
 def get_time_date():
 	global TIME_DATE
-	TIME_DATE = datetime.today().strftime("%I:%M:%S %p") + date.today().strftime("%B %d, %Y")
+	TIME_DATE = datetime.today().strftime("%I:%M:%S %p ") + date.today().strftime("%B %d, %Y")
 	return TIME_DATE
 
 app = Flask(__name__, static_folder='assets')
@@ -84,12 +77,12 @@ def alarm_template():
 	elif ARMED == False:
 		arm = ""
 		disarm = "disabled"
-	if ALARM_MODE == True:
-		loud = ""
-		silent = "disabled"
-	elif ALARM_MODE == False:
+	if ALARM_MODE == True: # loud mode, we want loud button to now be disabled since we're at that setting
 		loud = "disabled"
 		silent = ""
+	elif ALARM_MODE == False: # silent mode, can press Loud button to switch
+		loud = ""
+		silent = "disabled"
 	return render_template("alarm.html", armdisabled = arm, disarmdisabled = disarm, louddisable = loud, silentdisable = silent)
 
 @app.route("/alarm/<int:action>")
@@ -99,15 +92,18 @@ def alarm_act(action):
 	with ARMED_LOCK:
 		if action == 0:
 			ARMED = True
-			print("action 0, armed is true")
+			print("Tray is activated")
 		elif action == 1:
 			ARMED = False
-			print("action 1, armed is false") # debug message for terminal
+			print("Tray is deactivated") # debug message for terminal
+			tray.led_off()
 			tray.buzzer_off()
 		elif action == 2:
 			ALARM_MODE = True
+			print("Set to Loud Alarm")
 		elif action == 3:
 			ALARM_MODE = False
+			print("Set to Silent Alarm")
 	return redirect("/templates/alarm")
 
 @app.route("/templates/logdata")
@@ -122,26 +118,26 @@ def check_armed():
 	while True:
 		with ARMED_LOCK:
 			with WEIGHT_LOCK:
-				scan = tray.read_nfc()
-				if scan == False: # no tag was scanned (meaning either wrong ID or no tag during the 5 second timer)
-					print("Tray is activated, will trigger alarm")
-					#tray.white_led()
-					#time.sleep(3) # keep led on for 3 seconds (suspicious to keep it on)
-					#tray.led_off()
-					ARMED = True
-				elif scan: # successful scan
-					if ARMED == True: # user wants to deactivate tray to safely use without triggering alarm
+				scan = tray.read_nfc() 
+				if ARMED == False: # tray is deactivated
+					if scan: # successful scan, user wants to reactivate the tray
+						CURRENT_WEIGHT = tray.measure_weight()
+                                                ARMED = True
+                                                print("Scanned = True, User reactivated tray")
+                                                tray.white_led()
+                                                time.sleep(3)
+                                                tray.led_off()
+					# else: tray is deactivated so do nothing
+
+				else: # ARMED = True, have to check if the user wants to deactivate or not
+					if scan == False: # not tag was scanned (wrong ID or no tag, aka not the user)
+						print("Tray is activated, will trigger alarm")
+					else: # scan = True, successful scan
+						# user wants to deactivate tray to safely use without triggering alarm
 						ARMED = False 
 						tray.buzzer_off()
 						print("Scanned = True, User deactivated tray")
 						tray.green_led()
-						time.sleep(3)
-						tray.led_off()
-					else: # user wants to reactivate tray, done using
-						CURRENT_WEIGHT = tray.measure_weight()
-						ARMED = True
-						print("Scanned = True, User reactivated tray")
-						tray.white_led()
 						time.sleep(3)
 						tray.led_off()
 
@@ -183,8 +179,9 @@ def check_weight():
 						# just debug statement for demo testing to see what state we're in 
 
 if __name__ == "__main__":
+	print_alarm_setting() # tells user what alarm setting they are on initially
 	if (SETUP == False):   
-		print("Setting up components...*") # debug message to show that we are loading functions
+		print("Setting up components...") # debug message to show that we are loading functions
 		tray.buzzer_setup()
 		print("Buzzer done")
 		tray.nfc_setup() # not setting up
