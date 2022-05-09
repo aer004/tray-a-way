@@ -11,7 +11,6 @@ ARMED = True
 
 """
 ARMED = True is the default since the Tray-a-way should be tracking for weight changes
-
 When ARMED = True, this means that the alarm (silent or loud) will go off if there is a weight change
 When ARMED = False, this means that the alarm will not go off since the user has a successful scan
 """
@@ -67,16 +66,18 @@ def home_template():
 
 @app.route("/templates/alarm")
 def alarm_template():
+	global ARMED
+	global ALARM_MODE
 	arm = "disabled"
 	disarm = ""
 	loud = "disabled"
 	silent = ""
 	if ARMED == True:
-		arm = ""
-		disarm = "disabled"
-	elif ARMED == False:
 		arm = "disabled"
 		disarm = ""
+	elif ARMED == False:
+		arm = ""
+		disarm = "disabled"
 	if ALARM_MODE == True:
 		loud = ""
 		silent = "disabled"
@@ -92,6 +93,7 @@ def alarm_act(action):
 	with ARMED_LOCK:
 		if action == 0:
 			ARMED = True
+			print("action 0, armed is true")
 		elif action == 1:
 			ARMED = False
 			tray.buzzer_off()
@@ -104,7 +106,7 @@ def alarm_act(action):
 @app.route("/templates/logdata")
 def logdata_template():
 	d = WEIGHT_LOG
-	return render_template("logdata", hist = d)
+	return render_template("logdata.html", hist = d)
 
 
 def check_armed():
