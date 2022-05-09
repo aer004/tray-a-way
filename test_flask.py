@@ -66,6 +66,8 @@ def home_template():
 
 @app.route("/templates/alarm")
 def alarm_template():
+	global ARMED
+	global ALARM_MODE
 	arm = "disabled"
 	disarm = ""
 	loud = "disabled"
